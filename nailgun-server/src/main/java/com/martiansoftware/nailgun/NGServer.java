@@ -19,6 +19,8 @@ package com.martiansoftware.nailgun;
 
 import com.martiansoftware.nailgun.builtins.DefaultNail;
 import com.sun.jna.Platform;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.InetAddress;
@@ -29,6 +31,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,6 +122,24 @@ public class NGServer implements Runnable {
     private SecurityManager originalSecurityManager = null;
     private final int heartbeatTimeoutMillis;
 
+    @FunctionalInterface
+    public interface DomainSocketProvider {
+        ServerSocket apply() throws IOException;
+    }
+
+    private final DomainSocketProvider domainSocketProvider;
+
+    public static DomainSocketProvider defaultDomainSocketProvider(java.util.function.Supplier<String> addr) {
+        return () -> {
+            if (Platform.isWindows()) {
+                boolean requireStrictLength = true;
+                return new NGWin32NamedPipeServerSocket(addr.get(), requireStrictLength);
+            } else {
+                return new NGUnixDomainServerSocket(addr.get());
+            }
+        };
+    }
+
     /**
      * Creates a new NGServer that will listen at the specified address and on
      * the specified port with the specified session pool size. This does
@@ -179,6 +201,23 @@ public class NGServer implements Runnable {
      * before disconnecting them
      */
     public NGServer(NGListeningAddress listeningAddress, int sessionPoolSize, int timeoutMillis, InputStream in, PrintStream out, PrintStream err, Logger logger) {
+        this(listeningAddress, sessionPoolSize, timeoutMillis, in, out, err, logger, defaultDomainSocketProvider(listeningAddress::getLocalAddress));
+    }
+
+    /**
+     * Creates a new NGServer that will listen at the specified address and on
+     * the specified port with the specified session pool size. This does
+     * <b>not</b> cause the server to start listening. To do so, create a new
+     * <code>Thread</code> wrapping this
+     * <code>NGServer</code> and start it.
+     *
+     * @param listeningAddress the address at which to listen
+     * @param sessionPoolSize the max number of idle sessions allowed by the
+     * pool
+     * @param timeoutMillis timeout in millis to wait for a heartbeat from the client
+     * before disconnecting them
+     */
+    public NGServer(NGListeningAddress listeningAddress, int sessionPoolSize, int timeoutMillis, InputStream in, PrintStream out, PrintStream err, Logger logger, DomainSocketProvider domainSocketProvider) {
         this.listeningAddress = listeningAddress;
         this.in = in;
         this.out = out;
@@ -191,6 +230,8 @@ public class NGServer implements Runnable {
         // and definitely should be configurable in the future
         sessionPool = new NGSessionPool(this, sessionPoolSize, LOG);
         heartbeatTimeoutMillis = timeoutMillis;
+
+        this.domainSocketProvider = domainSocketProvider;
     }
 
     /**
@@ -411,12 +452,7 @@ public class NGServer implements Runnable {
                     serversocket = new ServerSocket(listeningAddress.getInetPort(), 0, listeningAddress.getInetAddress());
                 }
             } else {
-                if (Platform.isWindows()) {
-                    boolean requireStrictLength = true;
-                    serversocket = new NGWin32NamedPipeServerSocket(listeningAddress.getLocalAddress(), requireStrictLength);
-                } else {
-                    serversocket = new NGUnixDomainServerSocket(listeningAddress.getLocalAddress());
-                }
+                serversocket = domainSocketProvider.apply();
             }
 
             String portDescription;
