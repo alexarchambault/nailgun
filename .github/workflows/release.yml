@@ -16,5 +16,5 @@ jobs:
         run: |
           sbt releaseEarly
         env:
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONA_PASS: ${{ secrets.SONATYPE_PASSWORD }}
+          SONA_USER: ${{ secrets.SONATYPE_USERNAME }}
