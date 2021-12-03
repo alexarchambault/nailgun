@@ -6,6 +6,7 @@ import sbtdynver.DynVerPlugin.{autoImport => DynVerKeys}
 import ch.epfl.scala.sbt.release.{AutoImported => ReleaseEarlyNamespace}
 import com.typesafe.sbt.SbtPgp.{autoImport => PgpKeys}
 import sbtdynver.GitDescribeOutput
+import sbt.librarymanagement.ScmInfo
 
 object NailgunBuild extends PomBuild {
   override def projectDefinitions(baseDirectory: sbt.File) = {
@@ -36,6 +37,7 @@ object NailgunBuild extends PomBuild {
       GitHubDev("Duhemm", "Martin Duhem", "mnduhem@gmail.com"),
     ),
     Keys.organization := "ch.epfl.scala",
+    Keys.scmInfo := Some(ScmInfo(ThisRepo,"")),
     ReleaseEarlyNamespace.releaseEarlyWith := ReleaseEarlyNamespace.SonatypePublisher,
     PgpKeys.pgpPublicRing in Global := {
       if (Keys.insideCI.value) file("/drone/.gnupg/pubring.asc")

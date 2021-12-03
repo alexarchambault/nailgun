@@ -14,7 +14,7 @@ jobs:
       - uses: coursier/cache-action@v6.3
       - name: Publish
         run: |
-          sbt releaseEarly
+          sbt nailgun-server/releaseEarly
         env:
           SONA_PASS: ${{ secrets.SONATYPE_PASSWORD }}
           SONA_USER: ${{ secrets.SONATYPE_USERNAME }}
