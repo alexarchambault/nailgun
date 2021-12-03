@@ -481,10 +481,18 @@ public class NGServer implements Runnable {
                     + listeningAddress.toString()
                     + portDescription
                     + ".");
+            LOG.info("NGServer "
+                    + NGConstants.VERSION
+                    + " started on "
+                    + listeningAddress.toString()
+                    + portDescription
+                    + ".");
 
             while (!shutdown.get()) {
                 sessionOnDeck = sessionPool.take();
+                LOG.debug("Accepting connections on " + listeningAddress);
                 Socket socket = serversocket.accept();
+                LOG.debug("Accepted connection " + socket + " on " + listeningAddress);
                 sessionOnDeck.run(socket);
             }
 
