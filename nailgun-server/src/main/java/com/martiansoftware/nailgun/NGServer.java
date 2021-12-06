@@ -501,7 +501,7 @@ public class NGServer implements Runnable {
             // an exception will be thrown that we don't care about.  filter
             // those out.
             if (!shutdown.get()) {
-                t.printStackTrace();
+                LOG.warn("Caught exception during accept", t);
             }
         }
         if (sessionOnDeck != null) {
