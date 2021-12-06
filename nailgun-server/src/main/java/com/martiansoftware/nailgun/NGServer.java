@@ -37,12 +37,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>Listens for new connections from NailGun clients and launches NGSession
- * threads to process them.</p>
+ * Listens for new connections from NailGun clients and launches NGSession
+ * threads to process them.
  *
- * <p>This class can be run as a standalone server or can be embedded within
+ * This class can be run as a standalone server or can be embedded within
  * larger applications as a means of providing command-line interaction with the
- * application.</p>
+ * application.
  *
  * @author <a href="http://www.martiansoftware.com/contact.html">Marty Lamb</a>
  */
@@ -360,13 +360,8 @@ public class NGServer implements Runnable {
     }
 
     /**
-     * <p>Shuts down the server. The server will stop listening and its thread
-     * will finish. Any running nails will be allowed to finish.</p>
-     *
-     * <p>Any nails that provide a
-     * <pre><code>public static void nailShutdown(NGServer)</code></pre> method
-     * will have this method called with this NGServer as its sole
-     * parameter.</p>
+     * Shuts down the server. The server will stop listening and its thread
+     * will finish. Any running nails will be allowed to finish.
      *
      * @param exitVM if true, this method will also exit the JVM after calling
      * nailShutdown() on any nails.

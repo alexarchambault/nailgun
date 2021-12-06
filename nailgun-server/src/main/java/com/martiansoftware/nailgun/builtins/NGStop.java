@@ -1,4 +1,4 @@
-/*   
+/*
 
   Copyright 2004-2012, Martian Software, Inc.
 
@@ -21,10 +21,10 @@ package com.martiansoftware.nailgun.builtins;
 import com.martiansoftware.nailgun.NGContext;
 
 /**
- * <p>Shuts down the currently running server.</p>  
- * 
- * <p>This is aliased by default to the command "<code>ng-stop</code>".</p>
- * 
+ * Shuts down the currently running server.
+ *
+ * This is aliased by default to the command "<code>ng-stop</code>".
+ *
  * @author <a href="http://www.martiansoftware.com/contact.html">Marty Lamb</a>
  */
 public class NGStop {

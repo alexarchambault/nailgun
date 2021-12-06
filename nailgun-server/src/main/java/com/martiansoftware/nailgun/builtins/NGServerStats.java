@@ -1,4 +1,4 @@
-/*   
+/*
 
   Copyright 2004-2012, Martian Software, Inc.
 
@@ -25,12 +25,12 @@ import com.martiansoftware.nailgun.NGServer;
 import com.martiansoftware.nailgun.NGContext;
 
 /**
- * <p>Displays all <a href="NailStats.html">NailStats</a> tracked by the server.</p>
- * 
- * <p>This can be run standalone with no arguments.  It will also run automatically
- * upon <code>NGServer</code> shutdown, sending its output to the server's <code>System.out</code>.</p>
- * 
- * <p>This is aliased by default to the command "<code>ng-stats</code>".</p>
+ * Displays all <a href="NailStats.html">NailStats</a> tracked by the server.
+ *
+ * This can be run standalone with no arguments.  It will also run automatically
+ * upon <code>NGServer</code> shutdown, sending its output to the server's <code>System.out</code>.
+ *
+ * This is aliased by default to the command "<code>ng-stats</code>".
  * @author <a href="http://www.martiansoftware.com/contact.html">Marty Lamb</a>
  */
 
@@ -39,7 +39,7 @@ public class NGServerStats {
 	public static void nailShutdown(NGServer server) {
 		dumpStats(server, server.out);
 	}
-	
+
 	public static void nailMain(NGContext context) {
 		dumpStats(context.getNGServer(), context.out);
 	}

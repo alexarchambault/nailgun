@@ -1,4 +1,4 @@
-/*   
+/*
 
   Copyright 2004-2012, Martian Software, Inc.
 
@@ -25,26 +25,26 @@ import java.net.URLClassLoader;
 import com.martiansoftware.nailgun.NGContext;
 
 /**
- * <p>Provides a means to display and add to the system classpath at runtime.
+ * Provides a means to display and add to the system classpath at runtime.
  * If called with no arguments, the classpath is displayed.  Otherwise, each
  * argument is turned into a java.io.File and added to the classpath.  Relative
  * paths will be resolved relative to the directory in which the nailgun server
- * is running.  This is very likely to change in the future.</p>
- * 
- * <p>This is aliased by default to the command "<code>ng-cp</code>".</p>
- * 
+ * is running.  This is very likely to change in the future.
+ *
+ * This is aliased by default to the command "<code>ng-cp</code>".
+ *
  * @author <a href="http://www.martiansoftware.com/contact.html">Marty Lamb</a>
  */
 public class NGClasspath {
-	
+
 	/**
 	 * Adds the specified URL (for a jar or a directory) to the System
 	 * ClassLoader.  This code was written by antony_miguel and posted on
 	 * http://forum.java.sun.com/thread.jsp?forum=32&thread=300557&message=1191210
 	 * I assume it has been placed in the public domain.
-	 * 
+	 *
 	 * @param url the URL of the resource (directory or jar) to add to the
-	 * System classpath 
+	 * System classpath
 	 * @throws Exception if anything goes wrong.  The most likely culprit, should
 	 * this ever arise, would be that your VM is not using a URLClassLoader as the
 	 * System ClassLoader.  This would result in a ClassClastException that you
@@ -58,7 +58,7 @@ public class NGClasspath {
 		method.setAccessible(true);
 		method.invoke(sysloader, new Object[]{url});
 	}
-	
+
 	public static void nailMain(NGContext context) throws Exception {
 		String[] args = context.getArgs();
 		if (args.length == 0) {

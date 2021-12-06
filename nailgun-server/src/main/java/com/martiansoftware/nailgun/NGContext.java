@@ -1,4 +1,4 @@
-/*   
+/*
 
   Copyright 2004-2012, Martian Software, Inc.
 
@@ -25,11 +25,11 @@ import java.net.NetworkInterface;
 import java.util.Properties;
 
 /**
- * <p>Provides quite a bit of potentially useful information to classes specifically written for
+ * Provides quite a bit of potentially useful information to classes specifically written for
  * NailGun. The <a href="NGServer.html">NailGun server</a> itself, its <a
  * href="AliasManager.html">AliasManager</a>, the remote client's environment variables, and other
  * information is available via this class. For all intents and purposes, the NGContext represents a
- * single connection from a NailGun client.</p>
+ * single connection from a NailGun client.
  *
  * If a class is written with a
  *

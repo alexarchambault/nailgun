@@ -1,4 +1,4 @@
-/*   
+/*
 
   Copyright 2004-2012, Martian Software, Inc.
 
@@ -7,7 +7,7 @@
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,8 +19,8 @@
 package com.martiansoftware.nailgun;
 
 /**
- * <p>Collects and provides statistics on a nail.</p>
- * 
+ * Collects and provides statistics on a nail.
+ *
  * @author <a href="http://www.martiansoftware.com/contact.html">Marty Lamb</a>
  */
 
@@ -30,7 +30,7 @@ public class NailStats implements Cloneable {
 	private long runCounter;
 	private long refCounter;
 	private final Object lock;
-	
+
 	/**
 	 * Creates a new NailStats object for the specified class
 	 * @param nailclass the class for which we'll collect statistics
@@ -51,7 +51,7 @@ public class NailStats implements Cloneable {
 			++refCounter;
 		}
 	}
-	
+
 	/**
 	 * Logs the fact that an instance of this nail has finished
 	 */
@@ -69,20 +69,20 @@ public class NailStats implements Cloneable {
 	 */
 	public long getRunCount() {
 		synchronized (lock) {
-			return (runCounter);	
+			return (runCounter);
 		}
 	}
-	
+
 	/**
-	 * Returns the number of sessions currently running this nail. 
-	 * @return the number of sessions currently running this nail. 
+	 * Returns the number of sessions currently running this nail.
+	 * @return the number of sessions currently running this nail.
 	 */
 	public long getRefCount() {
 		synchronized (lock) {
 			return (refCounter);
 		}
 	}
-	
+
 	/**
 	 * Returns the class for which we're tracking statistics
 	 * @return the class for which we're tracking statistics
@@ -90,14 +90,14 @@ public class NailStats implements Cloneable {
 	public String getNailClass() {
 		return nailclass;
 	}
-	
+
 	/**
 	 * @see java.lang.Object#hashCode
 	 */
 	public int hashCode() {
 		return (nailclass.hashCode());
 	}
-	
+
 	/**
 	 * Returns true iff the specified <code>NailStats</code> object
 	 * is tracking the same class.
@@ -109,7 +109,7 @@ public class NailStats implements Cloneable {
 		NailStats other = (NailStats) o;
 		return (nailclass.equals(other.nailclass));
 	}
-	
+
 	/**
 	 * Creates a copy of this <code>NailStats</code> object.
 	 * @return a copy of this <code>NailStats</code> object.
@@ -121,12 +121,12 @@ public class NailStats implements Cloneable {
 		} catch (CloneNotSupportedException toDiscard) {}
 		return (result);
 	}
-	
+
 	/**
 	 * Returns a String representation of this <code>NailStats</code>
 	 * object, in the form "classname: runcount/refcount".
 	 * *return a String representation of this <code>NailStats</code>
-	 * object. 
+	 * object.
 	 */
 	public String toString() {
 		return (nailclass + ": " + getRunCount() + "/" + getRefCount());
