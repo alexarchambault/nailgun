@@ -305,7 +305,6 @@ public class NGSession extends Thread {
 
             } catch (Throwable t) {
                 LOG.warn("Internal error in session", t);
-                t.printStackTrace();
             }
 
             ((ThreadLocalInputStream) System.in).init(null);
