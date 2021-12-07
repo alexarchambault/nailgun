@@ -43,7 +43,6 @@ jobs:
     - name: Release
       run: sbt ci-release
       env:
-        CI_RELEASE: "nailgun-server/publishSigned"
         PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
         PGP_SECRET: ${{ secrets.PGP_SECRET }}
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
