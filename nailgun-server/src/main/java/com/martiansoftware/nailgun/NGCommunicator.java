@@ -234,13 +234,13 @@ public class NGCommunicator implements Closeable {
                             + " ms",
                         cause);
                 } else {
-                    LOG.warn("Nailgun client read future raised an exception", cause);
+                    LOG.error("Nailgun client read future raised an exception", cause);
                 }
             } catch (TimeoutException e) {
                 reason = NGClientDisconnectReason.HEARTBEAT;
                 LOG.warn( "Nailgun client read future timed out after " + futureTimeout + " ms", e);
             } catch (Throwable e) {
-                LOG.warn( "Nailgun orchestrator gets an exception ", e);
+                LOG.error( "Nailgun orchestrator gets an exception ", e);
             }
 
             LOG.debug("Nailgun client disconnected");
