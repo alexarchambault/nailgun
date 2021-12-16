@@ -233,6 +233,10 @@ public class NGCommunicator implements Closeable {
                     LOG.warn( "Nailgun client socket timed out after " + heartbeatTimeoutMillis
                             + " ms",
                         cause);
+                } else if (cause instanceof IOException && (cause.getMessage().contains("The pipe has been ended") || cause.getMessage().contains("No process is on the other end of the pipe."))) {
+                    // sbt/ipcsocket org.scalasbt.ipcsocket.Win32NamedPipeSocket stuff
+                    LOG.debug("Socket is disconnected");
+                    reason = NGClientDisconnectReason.SOCKET_ERROR;
                 } else {
                     LOG.error("Nailgun client read future raised an exception", cause);
                 }
