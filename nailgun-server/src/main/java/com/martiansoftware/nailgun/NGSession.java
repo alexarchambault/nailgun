@@ -68,6 +68,8 @@ public class NGSession extends Thread {
      */
     private final int heartbeatTimeoutMillis;
 
+    private final boolean redirectStreams;
+
     /**
      * The instance counter shared among all NGSessions
      */
@@ -104,13 +106,14 @@ public class NGSession extends Thread {
      * @param sessionPool The NGSessionPool we're working for
      * @param server The NGServer we're working for
      */
-    NGSession(NGSessionPool sessionPool, NGServer server, Logger logger) {
+    NGSession(NGSessionPool sessionPool, NGServer server, Logger logger, boolean redirectStreams) {
         super();
         this.LOG = logger;
         this.sessionPool = sessionPool;
         this.server = server;
         this.heartbeatTimeoutMillis = server.getHeartbeatTimeout();
         this.instanceNumber = instanceCounter.incrementAndGet();
+        this.redirectStreams = redirectStreams;
     }
 
     /**
@@ -211,10 +214,12 @@ public class NGSession extends Thread {
                     PrintStream err = new PrintStream(
                         new NGOutputStream(comm, NGConstants.CHUNKTYPE_STDERR));
                 ) {
-                    // ThreadLocal streams for System.in/out/err redirection
-                    ((ThreadLocalInputStream) System.in).init(in);
-                    ((ThreadLocalPrintStream) System.out).init(out);
-                    ((ThreadLocalPrintStream) System.err).init(err);
+                    if (redirectStreams) {
+                        // ThreadLocal streams for System.in/out/err redirection
+                        ((ThreadLocalInputStream) System.in).init(in);
+                        ((ThreadLocalPrintStream) System.out).init(out);
+                        ((ThreadLocalPrintStream) System.err).init(err);
+                    }
 
                     try {
                         Alias alias = server.getAliasManager().getAlias(cmdContext.getCommand());
@@ -307,9 +312,11 @@ public class NGSession extends Thread {
                 LOG.warn("Internal error in session", t);
             }
 
-            ((ThreadLocalInputStream) System.in).init(null);
-            ((ThreadLocalPrintStream) System.out).init(null);
-            ((ThreadLocalPrintStream) System.err).init(null);
+            if (redirectStreams) {
+                ((ThreadLocalInputStream) System.in).init(null);
+                ((ThreadLocalPrintStream) System.out).init(null);
+                ((ThreadLocalPrintStream) System.err).init(null);
+            }
 
             updateThreadName(null);
             sessionPool.give(this);

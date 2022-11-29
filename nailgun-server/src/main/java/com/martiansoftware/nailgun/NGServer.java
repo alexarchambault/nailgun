@@ -96,6 +96,8 @@ public class NGServer implements Runnable {
      */
     private final NGSessionPool sessionPool;
 
+    private final boolean redirectStreams;
+
     /**
      * <code>System.out</code> at the time of the NGServer's creation
      */
@@ -201,7 +203,7 @@ public class NGServer implements Runnable {
      * before disconnecting them
      */
     public NGServer(NGListeningAddress listeningAddress, int sessionPoolSize, int timeoutMillis, InputStream in, PrintStream out, PrintStream err, Logger logger) {
-        this(listeningAddress, sessionPoolSize, timeoutMillis, in, out, err, logger, defaultDomainSocketProvider(listeningAddress::getLocalAddress));
+        this(listeningAddress, sessionPoolSize, timeoutMillis, in, out, err, logger, defaultDomainSocketProvider(listeningAddress::getLocalAddress), false);
     }
 
     /**
@@ -217,8 +219,9 @@ public class NGServer implements Runnable {
      * @param timeoutMillis timeout in millis to wait for a heartbeat from the client
      * before disconnecting them
      */
-    public NGServer(NGListeningAddress listeningAddress, int sessionPoolSize, int timeoutMillis, InputStream in, PrintStream out, PrintStream err, Logger logger, DomainSocketProvider domainSocketProvider) {
+    public NGServer(NGListeningAddress listeningAddress, int sessionPoolSize, int timeoutMillis, InputStream in, PrintStream out, PrintStream err, Logger logger, DomainSocketProvider domainSocketProvider, boolean redirectStreams) {
         this.listeningAddress = listeningAddress;
+        this.redirectStreams = redirectStreams;
         this.in = in;
         this.out = out;
         this.err = err;
@@ -228,7 +231,7 @@ public class NGServer implements Runnable {
         allNailStats = new java.util.HashMap();
         // allow a maximum of 10 idle threads.  probably too high a number
         // and definitely should be configurable in the future
-        sessionPool = new NGSessionPool(this, sessionPoolSize, LOG);
+        sessionPool = new NGSessionPool(this, sessionPoolSize, LOG, redirectStreams);
         heartbeatTimeoutMillis = timeoutMillis;
 
         this.domainSocketProvider = domainSocketProvider;
@@ -386,9 +389,11 @@ public class NGServer implements Runnable {
         }
 
         // restore system streams
-        System.setIn(in);
-        System.setOut(out);
-        System.setErr(err);
+        if (redirectStreams) {
+            System.setIn(in);
+            System.setOut(out);
+            System.setErr(err);
+        }
 
         // Security manager is always disabled
         //System.setSecurityManager(originalSecurityManager);
@@ -431,11 +436,13 @@ public class NGServer implements Runnable {
         //        new NGSecurityManager(
         //        originalSecurityManager));
 
-        synchronized (System.in) {
-            if (!(System.in instanceof ThreadLocalInputStream)) {
-                System.setIn(new ThreadLocalInputStream(in));
-                System.setOut(new ThreadLocalPrintStream(out));
-                System.setErr(new ThreadLocalPrintStream(err));
+        if (redirectStreams) {
+            synchronized (System.in) {
+                if (!(System.in instanceof ThreadLocalInputStream)) {
+                    System.setIn(new ThreadLocalInputStream(in));
+                    System.setOut(new ThreadLocalPrintStream(out));
+                    System.setErr(new ThreadLocalPrintStream(err));
+                }
             }
         }
 

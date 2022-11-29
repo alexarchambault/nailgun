@@ -50,6 +50,8 @@ class NGSessionPool {
   /** have we been shut down? */
   boolean done = false;
 
+  private final boolean redirectStreams;
+
   /** synchronization object */
   private final Object lock = new Object();
 
@@ -60,10 +62,11 @@ class NGSessionPool {
    * @param server the server to work for
    * @param maxIdleSessions the maximum number of idle threads to allow
    */
-  NGSessionPool(NGServer server, int maxIdleSessions, Logger logger) {
+  NGSessionPool(NGServer server, int maxIdleSessions, Logger logger, boolean redirectStreams) {
     this.logger = logger;
     this.server = server;
     this.maxIdleSessions = Math.max(0, maxIdleSessions);
+    this.redirectStreams = redirectStreams;
 
     idlePool = new LinkedList<>();
     workingPool = new HashSet<>();
@@ -81,7 +84,7 @@ class NGSessionPool {
       }
       NGSession session = idlePool.poll();
       if (session == null) {
-        session = new NGSession(this, server, logger);
+        session = new NGSession(this, server, logger, redirectStreams);
         session.start();
       }
       workingPool.add(session);
