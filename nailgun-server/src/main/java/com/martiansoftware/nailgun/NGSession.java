@@ -1,4 +1,4 @@
-/*   
+/*
 
  Copyright 2004-2012, Martian Software, Inc.
 
@@ -256,9 +256,15 @@ public class NGSession extends Thread {
                                 mainMethod = cmdclass.getMethod("nailMain", nailMainSignature);
                                 NGContext context = new NGContext();
                                 context.setArgs(cmdlineArgs);
-                                context.in = in;
-                                context.out = out;
-                                context.err = err;
+                                if (redirectStreams) {
+                                    context.in = in;
+                                    context.out = out;
+                                    context.err = err;
+                                } else {
+                                    context.in = System.in;
+                                    context.out = System.out;
+                                    context.err = System.err;
+                                }
                                 context.setCommand(cmdContext.getCommand());
                                 context.setNGServer(server);
                                 context.setCommunicator(comm);
