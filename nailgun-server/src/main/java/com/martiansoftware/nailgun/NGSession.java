@@ -256,15 +256,9 @@ public class NGSession extends Thread {
                                 mainMethod = cmdclass.getMethod("nailMain", nailMainSignature);
                                 NGContext context = new NGContext();
                                 context.setArgs(cmdlineArgs);
-                                if (redirectStreams) {
-                                    context.in = in;
-                                    context.out = out;
-                                    context.err = err;
-                                } else {
-                                    context.in = System.in;
-                                    context.out = System.out;
-                                    context.err = System.err;
-                                }
+                                context.in = in;
+                                context.out = out;
+                                context.err = err;
                                 context.setCommand(cmdContext.getCommand());
                                 context.setNGServer(server);
                                 context.setCommunicator(comm);
